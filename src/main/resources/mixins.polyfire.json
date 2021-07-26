@@ -1,0 +1,7 @@
+{
+    "compatibilityLevel": "JAVA_8",
+    "package": "tudbut.mod.polyfire.mixin",
+    "mixins": [],
+    "client": [],
+    "server": []
+}
