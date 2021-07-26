@@ -2,6 +2,8 @@ package tudbut.mod.polyfire.utils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.Packet;
+import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Value;
 import tudbut.mod.polyfire.gui.GuiPF;
@@ -14,6 +16,7 @@ public class JSModule extends Module {
     private final Context context;
     private final Value jsModule;
     public final String id;
+    private Class<? extends Event>[] events;
 
     public ArrayList<GuiPF.Button> sb = new ArrayList<>();
 
@@ -45,9 +48,23 @@ public class JSModule extends Module {
             e.printStackTrace();
         }
         this.id = id;
+        this.events = jsModule.getMember("eventListeners").asHostObject();
+        if(this.events == null)
+            this.events = new Class[0];
 
         key = new KeyBind(null, toString() + "::toggle", true);
         updateBinds();
+    }
+
+    @SubscribeEvent
+    public void onEvent(Event event) {
+        for (int i = 0; i < events.length; i++) {
+            if(events[i].isInstance(event)) {
+                if (jsModule.hasMember("onEvent"))
+                    jsModule.getMember("onEvent").execute(event);
+                return;
+            }
+        }
     }
 
     @Override
