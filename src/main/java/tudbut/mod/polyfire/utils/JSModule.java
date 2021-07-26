@@ -16,7 +16,7 @@ public class JSModule extends Module {
     private final Context context;
     private final Value jsModule;
     public final String id;
-    private Class<? extends Event>[] events;
+    private Class<? extends Event>[] events = new Class[0];
 
     public ArrayList<GuiPF.Button> sb = new ArrayList<>();
 
@@ -48,9 +48,8 @@ public class JSModule extends Module {
             e.printStackTrace();
         }
         this.id = id;
-        this.events = jsModule.getMember("eventListeners").asHostObject();
-        if(this.events == null)
-            this.events = new Class[0];
+        if(jsModule.hasMember("eventListeners"))
+            this.events = jsModule.getMember("eventListeners").asHostObject();
 
         key = new KeyBind(null, toString() + "::toggle", true);
         updateBinds();
