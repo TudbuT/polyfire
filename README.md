@@ -22,3 +22,8 @@ You can unload and reload modules too: `-jsmodules remove YOUR_MODULE_ID_HERE` a
 
 For modules to be able to run, the parent module has to be enabled, so remember to enable the JSModules module
 in the ClickGUI!
+
+Documentation:
+==============
+
+Soon™
