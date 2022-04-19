@@ -13,13 +13,13 @@ import tudbut.mod.polyfire.events.EventHandler;
 public class MixinClientConnection {
     
     @Inject(method = "sendPacket(Lnet/minecraft/network/Packet;)V", at = @At("HEAD"), cancellable = true)
-    private void sendPacketPre(Packet<?> packet, CallbackInfo callbackInfo) {
+    private void sendPacket(Packet<?> packet, CallbackInfo callbackInfo) {
         if(EventHandler.onPacket(packet))
             callbackInfo.cancel();
     }
     
-    @Inject(method = "channelRead0", at = @At("HEAD"), cancellable = true)
-    private void channelReadPre(ChannelHandlerContext context, Packet<?> packet, CallbackInfo callbackInfo) {
+    @Inject(method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/Packet;)V", at = @At("HEAD"), cancellable = true)
+    private void channelRead0(ChannelHandlerContext context, Packet<?> packet, CallbackInfo callbackInfo) {
         if(EventHandler.onPacket(packet))
             callbackInfo.cancel();
     }

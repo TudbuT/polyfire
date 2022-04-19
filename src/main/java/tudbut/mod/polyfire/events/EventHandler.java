@@ -5,6 +5,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.SPacketTimeUpdate;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
@@ -19,10 +20,30 @@ import tudbut.mod.polyfire.utils.ChatUtils;
 import tudbut.mod.polyfire.utils.ThreadManager;
 import tudbut.mod.polyfire.utils.Utils;
 
+import java.util.Date;
+
 public class EventHandler {
+
+    public static float tps = 20.0f;
+    private static long lastTick = -1;
+    private static long joinTime = 0;
 
     public static boolean onPacket(Packet<?> packet) {
         boolean b = false;
+
+        if(packet instanceof SPacketTimeUpdate) {
+            long time = System.currentTimeMillis();
+            if(lastTick != -1 && new Date().getTime() - joinTime > 5000) {
+                long diff = time - lastTick;
+                if(diff > 50) {
+                    tps = (tps + ((1000f / diff) * 20f)) / 2;
+                }
+            }
+            else {
+                tps = 20.0f;
+            }
+            lastTick = time;
+        }
 
         for (int i = 0; i < PolyFire.modules.length ; i++) {
             if (PolyFire.modules[i].enabled)
@@ -35,7 +56,6 @@ public class EventHandler {
         }
 
         return b;
-
     }
 
     // Fired when enter is pressed in chat
@@ -134,6 +154,10 @@ public class EventHandler {
     public void onJoinServer(FMLNetworkEvent.ClientConnectedToServerEvent event) {
         ChatUtils.print("§a§lPolyFire has a Discord server: https://discord.gg/2WsVCQDpwy!");
 
+        tps = 20.0f;
+        lastTick = -1;
+        joinTime = System.currentTimeMillis();
+
         // Check for a new version
         ThreadManager.run(() -> {
             try {
@@ -228,6 +252,13 @@ public class EventHandler {
             EntityPlayerSP player = PolyFire.player;
             if (player == null || event.side == Side.SERVER)
                 return;
+
+            long time = System.currentTimeMillis();
+            long diff = time - lastTick;
+            float f = ((1000f / diff) * 20f);
+            if(f < tps / 1.25) {
+                tps = (tps + f) / 2;
+            }
 
             for (int i = 0; i < PolyFire.modules.length ; i++) {
                 PolyFire.modules[i].player = player;

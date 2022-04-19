@@ -34,7 +34,7 @@ public class PolyFire {
     // FML stuff and version
     public static final String MODID = "polyfire";
     public static final String NAME = "PolyFire";
-    public static final String VERSION = "v1.0.2";
+    public static final String VERSION = "v1.1.0";
     // TODO: PLEASE change this when skidding or rebranding.
     //  It is used for analytics and doesn't affect gameplay
     public static final String BRAND = "TudbuT/polyfire:master";
@@ -104,13 +104,13 @@ public class PolyFire {
 
     private void createDeobfMap() {
         try {
-            String[] srg = new StreamReader(ClassLoader.getSystemResourceAsStream("minecraft_obf.srg")).readAllAsString().replaceAll("\r\n", "\n").split("\n");
+            String[] srg = new StreamReader(ClassLoader.getSystemResourceAsStream("minecraft_obf.srg")).readAllAsString().split("\n");
 
             for (int i = 0; i < srg.length; i++) {
                 if(srg[i].isEmpty())
                     continue;
                 String[] srgLine = srg[i].split(" ");
-                if(srgLine[0].equalsIgnoreCase("FD:") || srgLine[0].equalsIgnoreCase("MD:") || srgLine[0].equalsIgnoreCase("CL:")) {
+                if(srgLine[0].equals("FD:") || srgLine[0].equals("MD:") || srgLine[0].equals("CL:")) {
                     if(srgLine.length == 3) {
                         String out = srgLine[1];
                         String in = srgLine[srgLine.length - 1];

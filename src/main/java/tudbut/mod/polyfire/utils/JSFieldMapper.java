@@ -90,6 +90,8 @@ public class JSFieldMapper implements RuntimeNameMapper {
     public String getClass(String name) {
         if(name.startsWith("pf."))
             name = "tudbut.mod.polyfire." + name.substring("pf.".length());
+        if(name.startsWith("mc."))
+            name = "net.minecraft." + name.substring("mc.".length());
         System.out.println("JS loaded class " + name);
         if(isObfClass(name)) {
             return getObfClassName(name);

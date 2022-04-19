@@ -4,6 +4,7 @@ import de.tudbut.io.StreamWriter;
 import de.tudbut.tools.Tools;
 import tudbut.debug.DebugProfiler;
 import tudbut.mod.polyfire.PolyFire;
+import tudbut.mod.polyfire.utils.isbpl.ISBPLModule;
 import tudbut.parsing.JSON;
 import tudbut.parsing.TCN;
 import tudbut.tools.ConfigSaverTCN;
@@ -17,7 +18,7 @@ public class ConfigUtils {
     }
     
     public static TCN makeTCN(PolyFire pf) {
-        TCN tcn = TCN.getEmpty();
+        TCN tcn = new TCN();
     
         tcn.set("init", "true");
         
@@ -40,7 +41,7 @@ public class ConfigUtils {
     }
     
     private static void makeModules(TCN tcn) {
-        TCN cfg = TCN.getEmpty();
+        TCN cfg = new TCN();
     
         for (int i = 0; i < PolyFire.modules.length; i++) {
             Module module = PolyFire.modules[i];
@@ -49,6 +50,11 @@ public class ConfigUtils {
                 module.onConfigSave();
                 if(module instanceof JSModule) {
                     StreamWriter writer = new StreamWriter(new FileOutputStream("config/pf/modules/config/" + ((JSModule) module).id + ".jsmodulecfg.json"));
+                    writer.writeChars(JSON.writeReadable(ConfigSaverTCN.saveConfig(module)).toCharArray());
+                    continue;
+                }
+                if(module instanceof ISBPLModule) {
+                    StreamWriter writer = new StreamWriter(new FileOutputStream("config/pf/modules/config/" + ((JSModule) module).id + ".isbplmodulecfg.json"));
                     writer.writeChars(JSON.writeReadable(ConfigSaverTCN.saveConfig(module)).toCharArray());
                     continue;
                 }
@@ -111,7 +117,7 @@ public class ConfigUtils {
             Module module = PolyFire.modules[i];
             profiler.next(module.toString());
 
-            if(module instanceof JSModule)
+            if(module instanceof JSModule || module instanceof ISBPLModule)
                 continue;
 
             if(module.enabled) {
