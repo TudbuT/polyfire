@@ -4,8 +4,8 @@ PolyFire
 ClickGUI opens with NUMROW_0
 
 
-How to use:
-===========
+How to use JSModules:
+=====================
 
 - Run `-jsmodules` to initialize
 - Navigate to your .minecraft folder
@@ -16,11 +16,29 @@ How to use:
 - You can now load the module with `-jsmodules add YOUR_MODULE_ID_HERE`. The module will then load
   whenever the client loads.
 
-
 You can unload and reload modules too: `-jsmodules remove YOUR_MODULE_ID_HERE` and 
 `-jsmodules reload YOUR_MODULE_ID_HERE`. To reload all modules, run `-jsmodules reload`
 
 For modules to be able to run, the parent module has to be enabled, so remember to enable the JSModules module
+in the ClickGUI!
+
+
+How to use ISBPLModules:
+========================
+
+- Run `-isbplmodules` to initialize
+- Navigate to your .minecraft folder
+- Go to `config/pf/modules/`
+- Copy Example.pfmodule.js and paste it, then rename the copy to `YOUR_MODULE_ID_HERE.pfmodule.isbpl` 
+  (if the .isbpl was invisible before renaming, do not add it!) - REMEMBER TO REMOVE THE `(1)` FROM THE END! 
+  THE NAME HAS TO FIT!
+- You can now load the module with `-isbplmodules add YOUR_MODULE_ID_HERE`. The module will then load
+  whenever the client loads.
+
+You can unload and reload modules too: `-isbplmodules remove YOUR_MODULE_ID_HERE` and 
+`-isbplmodules reload YOUR_MODULE_ID_HERE`. To reload all modules, run `-isbplmodules reload`
+
+For modules to be able to run, the parent module has to be enabled, so remember to enable the ISBPLModules module
 in the ClickGUI!
 
 Documentation:
