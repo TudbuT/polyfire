@@ -153,7 +153,8 @@ public class PolyFire {
         // Constructing modules to be usable
         modules = new Module[] {
                 new ClickGUI(),
-                new JSModules()
+                new JSModules(),
+                new ISBPLModules()
         };
         sa = new Date().getTime() - sa;
         System.out.println("Done in " + sa + "ms");
