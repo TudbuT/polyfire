@@ -28,3 +28,6 @@ forge*changelog.txt
 
 /logs
 /sponge
+
+*.patch
+*.orig
