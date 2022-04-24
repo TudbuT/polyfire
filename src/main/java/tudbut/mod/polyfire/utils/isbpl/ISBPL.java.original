@@ -996,9 +996,10 @@ public class ISBPL {
                 addFunction(type, method.getName() + method.getParameterCount(), stack -> {
                     method.setAccessible(true);
                     Object o = stack.pop().object;
+                    Class<?>[] parameterTypes = method.getParameterTypes();
                     Object[] params = new Object[method.getParameterCount()];
                     for (int i = params.length - 1 ; i >= 0 ; i--) {
-                        params[i] = fromISBPL(stack.pop());
+                        params[i] = fromISBPL(stack.pop(), parameterTypes[i]);
                     }
                     if(debug)
                         System.err.println("Java Call: " + method + " - " + Arrays.toString(params));
@@ -1018,9 +1019,10 @@ public class ISBPL {
                 addFunction(type, "new" + constructor.getParameterCount(), stack -> {
                     constructor.setAccessible(true);
                     stack.pop();
+                    Class<?>[] parameterTypes = constructor.getParameterTypes();
                     Object[] params = new Object[constructor.getParameterCount()];
                     for (int i = params.length - 1 ; i >= 0 ; i--) {
-                        params[i] = fromISBPL(stack.pop());
+                        params[i] = fromISBPL(stack.pop(), parameterTypes[i]);
                     }
                     if(debug)
                         System.err.println("Java Call: new - " + Arrays.toString(params));
@@ -1051,6 +1053,28 @@ public class ISBPL {
             Object[] array = new Object[isbplArray.length];
             for (int i = 0 ; i < array.length ; i++) {
                 array[i] = fromISBPL(isbplArray[i]);
+            }
+            return array;
+        }
+        return o.object;
+    }
+
+    private Object fromISBPL(ISBPLObject o, Class<?> expectedType) {
+        ISBPLType type = o.type;
+        if (type.equals(getType("null"))) {
+            return null;
+        }
+        if (type.equals(getType("string")))
+            return toJavaString(o);
+        if (type.equals(getType("array"))) {
+            ISBPLObject[] isbplArray = ((ISBPLObject[]) o.object);
+            Object array = new Object[isbplArray.length];
+            if(expectedType.isArray())
+                array = Array.newInstance(expectedType.getComponentType(), isbplArray.length);
+            else
+                typeError("array", "matching-array");
+            for (int i = 0 ; i < isbplArray.length ; i++) {
+                Array.set(array, i, fromISBPL(isbplArray[i]));
             }
             return array;
         }
@@ -1466,7 +1490,7 @@ class ISBPLObject {
     }
     
     public boolean isTruthy() {
-        return object != null && object != Integer.valueOf(0);
+        return object != null && object != Integer.valueOf(0) && object != Boolean.valueOf(false);
     }
     
     // This has heavy optimizations, please do not change unless necessary
