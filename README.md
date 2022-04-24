@@ -29,7 +29,7 @@ How to use ISBPLModules:
 - Run `-isbplmodules` to initialize
 - Navigate to your .minecraft folder
 - Go to `config/pf/modules/`
-- Copy Example.pfmodule.js and paste it, then rename the copy to `YOUR_MODULE_ID_HERE.pfmodule.isbpl` 
+- Copy Example.pfmodule.isbpl and paste it, then rename the copy to `YOUR_MODULE_ID_HERE.pfmodule.isbpl` 
   (if the .isbpl was invisible before renaming, do not add it!) - REMEMBER TO REMOVE THE `(1)` FROM THE END! 
   THE NAME HAS TO FIT!
 - You can now load the module with `-isbplmodules add YOUR_MODULE_ID_HERE`. The module will then load
