@@ -23,7 +23,7 @@ public class ISBPLModule extends Module {
     private final ISBPL context;
     public final String id;
     
-    public TCN config;
+    public TCN config = new TCN();
 
     public Stack<ISBPLObject> run(String code, Object... args) {
         Stack<ISBPLObject> stack = new Stack<>();

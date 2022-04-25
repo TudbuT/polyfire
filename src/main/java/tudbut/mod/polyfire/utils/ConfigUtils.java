@@ -54,7 +54,7 @@ public class ConfigUtils {
                     continue;
                 }
                 if(module instanceof ISBPLModule) {
-                    StreamWriter writer = new StreamWriter(new FileOutputStream("config/pf/modules/config/" + ((JSModule) module).id + ".isbplmodulecfg.json"));
+                    StreamWriter writer = new StreamWriter(new FileOutputStream("config/pf/modules/config/" + ((ISBPLModule) module).id + ".isbplmodulecfg.json"));
                     writer.writeChars(JSON.writeReadable(ConfigSaverTCN.saveConfig(module)).toCharArray());
                     continue;
                 }
