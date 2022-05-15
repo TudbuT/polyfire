@@ -16,7 +16,6 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'eclipse'
 
-version = mod_version
 group = mod_group
 archivesBaseName = mod_id
 

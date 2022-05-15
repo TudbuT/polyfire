@@ -32,3 +32,6 @@ forge*changelog.txt
 *.patch
 *.orig
 *.rej
+
+gitlog
+gitdiff
