@@ -50,6 +50,6 @@ echo "then press enter and hit publish once the"
 echo "script is done."
 read
 git push
-git tag -aF message.txt $(cat version.txt)
+git tag -aF message.txt "$(cat version.txt)"
 git push --tags
 git checkout dev
