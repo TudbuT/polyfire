@@ -110,17 +110,15 @@ public class PolyFire {
                 if(srg[i].isEmpty())
                     continue;
                 String[] srgLine = srg[i].split(" ");
-                if(srgLine[0].equals("FD:") || srgLine[0].equals("MD:") || srgLine[0].equals("CL:")) {
-                    if(srgLine.length == 3) {
-                        String out = srgLine[1];
-                        String in = srgLine[srgLine.length - 1];
-                        obfMap.set(out, in);
-                    }
-                    else if(srgLine.length == 5) {
-                        String out = srgLine[1];
-                        String in = srgLine[srgLine.length - 2];
-                        obfMap.set(out, in);
-                    }
+                if(srgLine[0].equals("FD:") || srgLine[0].equals("CL:")) {
+                    String out = srgLine[1];
+                    String in = srgLine[srgLine.length - 1];
+                    obfMap.set(out, in);
+                }
+                if(srgLine[0].equals("MD:")) {
+                    String out = srgLine[1];
+                    String in = srgLine[3];
+                    obfMap.set(out, in);
                 }
             }
         } catch (Exception e) {
