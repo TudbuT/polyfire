@@ -1,5 +1,6 @@
 package tudbut.mod.polyfire;
 
+import de.tudbut.async.Task;
 import de.tudbut.io.StreamReader;
 import de.tudbut.pluginapi.Plugin;
 import de.tudbut.pluginapi.PluginManager;
@@ -62,6 +63,9 @@ public class PolyFire {
     // Logger, provided by Forge
     public static Logger logger = LogManager.getLogger("polyfire");
     
+    
+    public static Task<Void> deobfTask;
+    
     private static PolyFire instance;
     
     public static PolyFire getInstance() {
@@ -98,33 +102,42 @@ public class PolyFire {
         catch (IOException e) {
             e.printStackTrace();
         }
-
-        createDeobfMap();
+    
+        deobfTask = createDeobfMap();
+        deobfTask
+                .err(Throwable::printStackTrace)
+                .ok();
     }
 
-    private void createDeobfMap() {
-        try {
-            String[] srg = new StreamReader(ClassLoader.getSystemResourceAsStream("minecraft_obf.srg")).readAllAsString().split("\n");
-
-            for (int i = 0; i < srg.length; i++) {
-                if(srg[i].isEmpty())
-                    continue;
-                String[] srgLine = srg[i].split(" ");
-                if(srgLine[0].equals("FD:") || srgLine[0].equals("CL:")) {
-                    String out = srgLine[1];
-                    String in = srgLine[srgLine.length - 1];
-                    obfMap.set(out, in);
+    private Task<Void> createDeobfMap() {
+        return new Task<>((res, rej) -> {
+            if (!isObfEnv())
+                return;
+            try {
+                String[] srg = new StreamReader(ClassLoader.getSystemResourceAsStream("minecraft_obf.srg")).readAllAsString().split("\n");
+        
+                for (int i = 0 ; i < srg.length ; i++) {
+                    if (srg[i].isEmpty())
+                        continue;
+                    String[] srgLine = srg[i].split(" ");
+                    if (srgLine[0].equals("FD:") || srgLine[0].equals("CL:")) {
+                        String out = srgLine[1];
+                        String in = srgLine[srgLine.length - 1];
+                        obfMap.set(out, in);
+                    }
+                    if (srgLine[0].equals("MD:")) {
+                        String out = srgLine[1];
+                        String in = srgLine[3];
+                        obfMap.set(out, in);
+                    }
                 }
-                if(srgLine[0].equals("MD:")) {
-                    String out = srgLine[1];
-                    String in = srgLine[3];
-                    obfMap.set(out, in);
-                }
+                res.call(null);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        deobfMap = obfMap.flip();
+            catch (Exception e) {
+                rej.call(e);
+            }
+            deobfMap = obfMap.flip();
+        });
     }
 
     // Runs when all important info is loaded and all mods are pre-initialized,
@@ -143,6 +156,12 @@ public class PolyFire {
         
         data = Utils.getData();
         
+        sa = new Date().getTime() - sa;
+        System.out.println("Done in " + sa + "ms");
+        
+        System.out.println("Waiting for deobfTask");
+        sa = new Date().getTime();
+        deobfTask.await();
         sa = new Date().getTime() - sa;
         System.out.println("Done in " + sa + "ms");
         
