@@ -108,28 +108,32 @@ public class PolyFire {
                 .err(Throwable::printStackTrace)
                 .ok();
     }
-
+    
     private Task<Void> createDeobfMap() {
         return new Task<>((res, rej) -> {
             if (!isObfEnv())
                 return;
             try {
                 String[] srg = new StreamReader(ClassLoader.getSystemResourceAsStream("minecraft_obf.srg")).readAllAsString().split("\n");
-        
+                
                 for (int i = 0 ; i < srg.length ; i++) {
-                    if (srg[i].isEmpty())
-                        continue;
-                    String[] srgLine = srg[i].split(" ");
-                    if (srgLine[0].equals("FD:") || srgLine[0].equals("CL:")) {
-                        String out = srgLine[1];
-                        String in = srgLine[srgLine.length - 1];
-                        obfMap.set(out, in);
-                    }
-                    if (srgLine[0].equals("MD:")) {
-                        String out = srgLine[1];
-                        String in = srgLine[3];
-                        obfMap.set(out, in);
-                    }
+                    int finalI = i;
+                    new Task<Void>((res1, rej1) -> {
+                        if (srg[finalI].isEmpty()) {
+                            return;
+                        }
+                        String[] srgLine = srg[finalI].split(" ");
+                        if (srgLine[0].equals("FD:") || srgLine[0].equals("CL:")) {
+                            String out = srgLine[1];
+                            String in = srgLine[srgLine.length - 1];
+                            obfMap.set(out, in);
+                        }
+                        if (srgLine[0].equals("MD:")) {
+                            String out = srgLine[1];
+                            String in = srgLine[3];
+                            obfMap.set(out, in);
+                        }
+                    }).ok().await();
                 }
                 res.call(null);
             }
