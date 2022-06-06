@@ -54,8 +54,8 @@ public class ISBPLModule extends Module {
         try {
             context.natives.put("jm", stack -> stack.push(context.toISBPL(this)));
             context.natives.put("mc", stack -> stack.push(context.toISBPL(Minecraft.getMinecraft())));
-            context.interpret(new File("_pf"), "native mc native jm", new Stack<>());
-            run("def config jm config =config");
+            run("native jm native mc");
+            run("func config { jm config }");
             run("def sb jm subComponents =sb");
             run("def Setting \"tudbut.mod.client.ttcp.utils.Setting\" JIO class =Setting");
         } catch (Throwable e) {
