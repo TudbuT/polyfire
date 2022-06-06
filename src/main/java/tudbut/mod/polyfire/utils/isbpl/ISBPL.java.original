@@ -132,7 +132,7 @@ public class ISBPL {
                         else {
                             throw error;
                         }
-                    } catch (Exception e) {
+                    } catch (Throwable e) {
                         if (Arrays.asList(allowed).contains("Java") || allowed.length == 1 && allowed[0].equals("all")) {
                             stack.push(new ISBPLObject(getType("error"), e));
                             stack.push(toISBPL(e));
