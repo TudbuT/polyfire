@@ -35,7 +35,7 @@ public class PolyFire {
     // FML stuff and version
     public static final String MODID = "polyfire";
     public static final String NAME = "PolyFire";
-    public static final String VERSION = "v1.1.4a";
+    public static final String VERSION = "v1.1.5a";
     // TODO: PLEASE change this when skidding or rebranding.
     //  It is used for analytics and doesn't affect gameplay
     public static final String BRAND = "TudbuT/polyfire:master";
