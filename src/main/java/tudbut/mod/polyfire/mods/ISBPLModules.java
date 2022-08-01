@@ -95,7 +95,7 @@ public class ISBPLModules extends Module {
             ChatUtils.print("Put ISBPLModule files in your config/ttc/modules folder!");
         }
         try {
-            StreamWriter writer = new StreamWriter(new FileOutputStream("config/pf/modules/Example.ttcmodule.isbpl"));
+            StreamWriter writer = new StreamWriter(new FileOutputStream("config/pf/modules/Example.pfmodule.isbpl"));
             writer.writeChars(("" +
                     "def name \"Example\" =name\n" +
                     "" +
