@@ -19,8 +19,6 @@ import sun.misc.Unsafe; // the Safe
  */
 
 public class ISBPL {
-    // TODO: fully implement JIO
-    // public static final boolean ENABLE_JINTEROP = true;
     
     static Unsafe theSafe;
     static {
@@ -1167,7 +1165,7 @@ public class ISBPL {
                 }
                 if (clazz.isEnum()) {
                     for (Object o : clazz.getEnumConstants()) {
-                        String name = PolyFire.obfMap.get(clazz.getName().replaceAll("\\.", "/") + "/" + o.toString(), o.toString());
+                        String name = PolyFire.obfMap.getOrDefault(clazz.getName().replaceAll("\\.", "/") + "/" + o.toString(), o.toString());
                         name = name.substring(name.lastIndexOf('/') + 1);
                         addFunction(type, name, stack -> {
                             if(debug)
@@ -1177,7 +1175,7 @@ public class ISBPL {
                     }
                 }
                 for (Field field : clazz.getDeclaredFields()) {
-                    String name = PolyFire.obfMap.get(clazz.getName().replaceAll("\\.", "/") + "/" + field.getName(), field.getName());
+                    String name = PolyFire.obfMap.getOrDefault(clazz.getName().replaceAll("\\.", "/") + "/" + field.getName(), field.getName());
                     name = name.substring(name.lastIndexOf('/') + 1);
                     addFunction(type, name, stack -> {
                         forceAccessible(field);
@@ -1202,7 +1200,7 @@ public class ISBPL {
                 }
                 HashMap<String, ArrayList<Method>> methods = new HashMap<>();
                 for (Method method : clazz.getDeclaredMethods()) {
-                    String name = PolyFire.obfMap.get(clazz.getName().replaceAll("\\.", "/") + "/" + method.getName(), method.getName());
+                    String name = PolyFire.obfMap.getOrDefault(clazz.getName().replaceAll("\\.", "/") + "/" + method.getName(), method.getName());
                     name = name.substring(name.lastIndexOf('/') + 1);
                     ArrayList<Method> methodList = methods.get(name + method.getParameterCount());
                     if(methodList == null)

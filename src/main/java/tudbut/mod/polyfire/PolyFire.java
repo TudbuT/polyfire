@@ -20,7 +20,6 @@ import tudbut.mod.polyfire.events.EventHandler;
 import tudbut.mod.polyfire.mods.*;
 import tudbut.mod.polyfire.utils.*;
 import tudbut.obj.Save;
-import tudbut.obj.TLMap;
 import tudbut.parsing.TCN;
 import tudbut.tools.Lock;
 
@@ -28,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Date;
 
 @Mod(modid = PolyFire.MODID, name = PolyFire.NAME, version = PolyFire.VERSION)
@@ -57,8 +57,8 @@ public class PolyFire {
     @Save
     public static String prefix = "-";
 
-    public static TLMap<String, String> obfMap = new TLMap<>();
-    public static TLMap<String, String> deobfMap = new TLMap<>();
+    public static HashMap<String, String> obfMap = new HashMap<>();
+    public static HashMap<String, String> deobfMap = new HashMap<>();
     
     // Logger, provided by Forge
     public static Logger logger = LogManager.getLogger("polyfire");
@@ -116,22 +116,26 @@ public class PolyFire {
             try {
                 String[] srg = new StreamReader(ClassLoader.getSystemResourceAsStream("minecraft_obf.srg")).readAllAsString().split("\n");
                 
-                for (int i = 0 ; i < srg.length ; i++) {
+                for (int i = 0 ; i < srg.length ; i+=1000) {
                     int finalI = i;
                     new Task<Void>((res1, rej1) -> {
-                        if (srg[finalI].isEmpty()) {
-                            return;
-                        }
-                        String[] srgLine = srg[finalI].split(" ");
-                        if (srgLine[0].equals("FD:") || srgLine[0].equals("CL:")) {
-                            String out = srgLine[1];
-                            String in = srgLine[srgLine.length - 1];
-                            obfMap.set(out, in);
-                        }
-                        if (srgLine[0].equals("MD:")) {
-                            String out = srgLine[1];
-                            String in = srgLine[3];
-                            obfMap.set(out, in);
+                        for(int n = finalI; n < srg.length && n - finalI < 1000; n++) {
+                            if (srg[n].isEmpty()) {
+                                continue;
+                            }
+                            String[] srgLine = srg[n].split(" ");
+                            if (srgLine[0].equals("FD:") || srgLine[0].equals("CL:")) {
+                                String out = srgLine[1];
+                                String in = srgLine[srgLine.length - 1];
+                                obfMap.put(out, in);
+                                deobfMap.put(in, out);
+                            }
+                            if (srgLine[0].equals("MD:")) {
+                                String out = srgLine[1];
+                                String in = srgLine[3];
+                                obfMap.put(out, in);
+                                deobfMap.put(in, out);
+                            }
                         }
                     }).ok().await();
                 }
@@ -140,7 +144,6 @@ public class PolyFire {
             catch (Exception e) {
                 rej.call(e);
             }
-            deobfMap = obfMap.flip();
         });
     }
 

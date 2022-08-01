@@ -15,8 +15,6 @@ import sun.misc.Unsafe; // the Safe
  */
 
 public class ISBPL {
-    // TODO: fully implement JIO
-    // public static final boolean ENABLE_JINTEROP = true;
     
     static Unsafe theSafe;
     static {
