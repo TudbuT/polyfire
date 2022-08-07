@@ -190,7 +190,7 @@ public class GuiPF extends GuiScreen {
             if (buttons == null)
                 resetButtons();
         }
-        for (int i = 0; i < buttons.length; i++) {
+        for (int i = 0; i < Math.min(buttons.length, PolyFire.modules.length); i++) {
             if (buttons[i] != null)
                 buttons[i].text.set(PolyFire.modules[i].toString() + ": " + PolyFire.modules[i].enabled);
         }
