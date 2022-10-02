@@ -63,6 +63,7 @@ dependencies {
     //noinspection GroovyAssignabilityCheck
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
+    compile('net.minecraftforge:mergetool:1.0.12')
     compile('org.spongepowered:mixin:0.8.3-SNAPSHOT') {
         exclude module: 'guava'
         exclude module: 'commons-io'
@@ -113,3 +114,12 @@ jar {
 }
 
 jar.finalizedBy('reobfJar')
+
+mixin {
+    defaultObfuscationEnv 'searge'
+    sourceSets {
+        main {
+            ext.refMap = 'mixins.polyfire.refmap.json'
+        }
+    }
+}

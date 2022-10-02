@@ -51,6 +51,13 @@ public class ISBPL {
     HashMap<String, ISBPLCallable> natives = new HashMap<>();
     boolean stopExceptions = false;
     HashMap<Throwable, Stack<ISBPLFrame>> stackTraces = new HashMap<>();
+
+    public static void clean() {
+        System.out.println("ISBPL CLEAN!!");
+        defaultTypeInt = new ISBPLType("int", -2);
+        defaultTypeString = new ISBPLType("string", -1);
+        ISBPLStreamer.streams.clear();
+    }
     
     private final Object syncMakeThread = new Object();
     private ISBPLKeyword getKeyword(String word) {
@@ -1524,8 +1531,8 @@ public class ISBPL {
     }
     
     // These will die as soon as std creates the real types and any types created before these are replaced become invalid.
-    static final ISBPLType defaultTypeInt = new ISBPLType("int", -2);
-    static final ISBPLType defaultTypeString = new ISBPLType("string", -1);
+    static ISBPLType defaultTypeInt = new ISBPLType("int", -2);
+    static ISBPLType defaultTypeString = new ISBPLType("string", -1);
     
     public ISBPLType getType(String name) {
         for (int i = 0 ; i < types.size() ; i++) {

@@ -1,6 +1,7 @@
 {
     "compatibilityLevel": "JAVA_8",
     "package": "tudbut.mod.polyfire.mixin",
+    "refmap": "mixins.polyfire.refmap.json",
     "mixins": [
         "MixinClientConnection"
     ],

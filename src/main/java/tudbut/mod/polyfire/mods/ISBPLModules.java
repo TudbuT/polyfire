@@ -6,6 +6,7 @@ import tudbut.mod.polyfire.PolyFire;
 import tudbut.mod.polyfire.utils.ChatUtils;
 import tudbut.mod.polyfire.utils.Module;
 import tudbut.mod.polyfire.utils.isbpl.ISBPLModule;
+import tudbut.mod.polyfire.utils.isbpl.ISBPL;
 import tudbut.mod.polyfire.utils.Module;
 import tudbut.obj.Save;
 import tudbut.obj.TLMap;
@@ -38,6 +39,7 @@ public class ISBPLModules extends Module {
         for (String module : isbplModules) {
             unloadModule(module);
         }
+        ISBPL.clean();
     }
 
     public Module loadModule(String s) {
