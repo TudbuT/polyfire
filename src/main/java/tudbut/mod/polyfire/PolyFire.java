@@ -1,6 +1,5 @@
 package tudbut.mod.polyfire;
 
-import de.tudbut.async.Task;
 import de.tudbut.io.StreamReader;
 import de.tudbut.pluginapi.Plugin;
 import de.tudbut.pluginapi.PluginManager;
@@ -35,7 +34,7 @@ public class PolyFire {
     // FML stuff and version
     public static final String MODID = "polyfire";
     public static final String NAME = "PolyFire";
-    public static final String VERSION = "v1.1.5a";
+    public static final String VERSION = "v1.1.6a";
     // TODO: PLEASE change this when skidding or rebranding.
     //  It is used for analytics and doesn't affect gameplay
     public static final String BRAND = "TudbuT/polyfire:master";
@@ -63,8 +62,6 @@ public class PolyFire {
     // Logger, provided by Forge
     public static Logger logger = LogManager.getLogger("polyfire");
     
-    
-    public static Task<Void> deobfTask;
     
     private static PolyFire instance;
     
@@ -103,48 +100,37 @@ public class PolyFire {
             e.printStackTrace();
         }
     
-        deobfTask = createDeobfMap();
-        deobfTask
-                .err(Throwable::printStackTrace)
-                .ok();
+        createDeobfMap();
     }
     
-    private Task<Void> createDeobfMap() {
-        return new Task<>((res, rej) -> {
-            if (!isObfEnv())
-                return;
-            try {
-                String[] srg = new StreamReader(ClassLoader.getSystemResourceAsStream("minecraft_obf.srg")).readAllAsString().split("\n");
-                
-                for (int i = 0 ; i < srg.length ; i+=1000) {
-                    int finalI = i;
-                    new Task<Void>((res1, rej1) -> {
-                        for(int n = finalI; n < srg.length && n - finalI < 1000; n++) {
-                            if (srg[n].isEmpty()) {
-                                continue;
-                            }
-                            String[] srgLine = srg[n].split(" ");
-                            if (srgLine[0].equals("FD:") || srgLine[0].equals("CL:")) {
-                                String out = srgLine[1];
-                                String in = srgLine[srgLine.length - 1];
-                                obfMap.put(out, in);
-                                deobfMap.put(in, out);
-                            }
-                            if (srgLine[0].equals("MD:")) {
-                                String out = srgLine[1];
-                                String in = srgLine[3];
-                                obfMap.put(out, in);
-                                deobfMap.put(in, out);
-                            }
-                        }
-                    }).ok().await();
+    private void createDeobfMap() {
+        if (!isObfEnv())
+            return;
+        try {
+            String[] srg = new StreamReader(ClassLoader.getSystemResourceAsStream("minecraft_obf.srg")).readAllAsString().split("\n");
+            
+            for (int i = 0 ; i < srg.length ; i+=1000) {
+                if (srg[i].isEmpty()) {
+                    continue;
                 }
-                res.call(null);
+                String[] srgLine = srg[i].split(" ");
+                if (srgLine[0].equals("FD:") || srgLine[0].equals("CL:")) {
+                    String out = srgLine[1];
+                    String in = srgLine[srgLine.length - 1];
+                    obfMap.put(out, in);
+                    deobfMap.put(in, out);
+                }
+                if (srgLine[0].equals("MD:")) {
+                    String out = srgLine[1];
+                    String in = srgLine[3];
+                    obfMap.put(out, in);
+                    deobfMap.put(in, out);
+                }
             }
-            catch (Exception e) {
-                rej.call(e);
-            }
-        });
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // Runs when all important info is loaded and all mods are pre-initialized,
@@ -163,12 +149,6 @@ public class PolyFire {
         
         data = Utils.getData();
         
-        sa = new Date().getTime() - sa;
-        System.out.println("Done in " + sa + "ms");
-        
-        System.out.println("Waiting for deobfTask");
-        sa = new Date().getTime();
-        deobfTask.await();
         sa = new Date().getTime() - sa;
         System.out.println("Done in " + sa + "ms");
         
